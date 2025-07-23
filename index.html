@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .weather-container {
+            background: #ffffffcc;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        input {
+            padding: 10px;
+            width: 70%;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weather-container">
+        <h2>Weather Checker</h2>
+        <input type="text" id="locationInput" placeholder="Enter city name" />
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="result" id="weatherResult"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const location = document.getElementById("locationInput").value.trim();
+            const apiKey = "7f966f7b31fb4921b8f91215252307";
+
+            if (!location) {
+                document.getElementById("weatherResult").innerText = "Please enter a location.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`);
+                const data = await response.json();
+
+                if (data.error) {
+                    document.getElementById("weatherResult").innerText = `Error: ${data.error.message}`;
+                } else {
+                    const tempC = data.current.temp_c;
+                    const city = data.location.name;
+                    const country = data.location.country;
+                    document.getElementById("weatherResult").innerHTML =
+                        `🌍 Location: ${city}, ${country}<br>🌡️ Temperature: ${tempC} °C`;
+                }
+            } catch (error) {
+                document.getElementById("weatherResult").innerText = "Failed to fetch weather data.";
+            }
+        }
+    </script>
+</body>
+
+</html>
